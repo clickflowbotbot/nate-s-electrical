@@ -6,76 +6,54 @@ document.addEventListener('DOMContentLoaded', () => {
 
     hamburger.addEventListener('click', () => {
         navMenu.classList.toggle('active');
-        hamburger.classList.toggle('active');
-        
-        // Animate hamburger
-        const spans = hamburger.querySelectorAll('span');
-        if (navMenu.classList.contains('active')) {
-            spans[0].style.transform = 'rotate(45deg) translate(8px, 8px)';
-            spans[1].style.opacity = '0';
-            spans[2].style.transform = 'rotate(-45deg) translate(8px, -8px)';
-        } else {
-            spans[0].style.transform = 'none';
-            spans[1].style.opacity = '1';
-            spans[2].style.transform = 'none';
-        }
     });
 
-    // Close menu on link click
     navLinks.forEach(link => {
         link.addEventListener('click', () => {
             navMenu.classList.remove('active');
-            const spans = hamburger.querySelectorAll('span');
-            spans[0].style.transform = 'none';
-            spans[1].style.opacity = '1';
-            spans[2].style.transform = 'none';
         });
     });
 
-    // Improved Scroll Reveal
-    const revealElements = document.querySelectorAll('.reveal');
+    // Intersection Observer for Reveal
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
 
-    const revealOnScroll = () => {
-        const windowHeight = window.innerHeight;
-        
-        revealElements.forEach(el => {
-            const revealTop = el.getBoundingClientRect().top;
-            const revealPoint = 100;
-            
-            if (revealTop < windowHeight - revealPoint) {
-                el.classList.add('active');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+                observer.unobserve(entry.target);
             }
         });
-    };
+    }, observerOptions);
+
+    document.querySelectorAll('.reveal').forEach(el => {
+        observer.observe(el);
+    });
 
     // Navbar Scroll Effect
     const navbar = document.querySelector('.navbar');
     window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
-            navbar.style.padding = '0';
-            navbar.style.boxShadow = '0 10px 30px -10px rgba(0,0,0,0.1)';
+        if (window.scrollY > 20) {
+            navbar.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1)';
         } else {
-            navbar.style.padding = '0';
             navbar.style.boxShadow = 'none';
         }
-        revealOnScroll();
     });
 
-    // Trigger once on load
-    revealOnScroll();
-
-    // Smooth scroll for anchor links
+    // Smooth scroll offset handle
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
-            const targetId = this.getAttribute('href');
-            if(targetId === '#') return;
-            
-            const targetElement = document.querySelector(targetId);
-            if (targetElement) {
-                const offset = 90; // Navbar height
-                const elementPosition = targetElement.getBoundingClientRect().top;
-                const offsetPosition = elementPosition + window.pageYOffset - offset;
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                const offset = 80;
+                const bodyRect = document.body.getBoundingClientRect().top;
+                const elementRect = target.getBoundingClientRect().top;
+                const elementPosition = elementRect - bodyRect;
+                const offsetPosition = elementPosition - offset;
 
                 window.scrollTo({
                     top: offsetPosition,
