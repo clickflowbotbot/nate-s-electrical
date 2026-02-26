@@ -11,9 +11,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Animate hamburger
         const spans = hamburger.querySelectorAll('span');
         if (navMenu.classList.contains('active')) {
-            spans[0].style.transform = 'rotate(45deg) translate(6px, 6px)';
+            spans[0].style.transform = 'rotate(45deg) translate(8px, 8px)';
             spans[1].style.opacity = '0';
-            spans[2].style.transform = 'rotate(-45deg) translate(6px, -6px)';
+            spans[2].style.transform = 'rotate(-45deg) translate(8px, -8px)';
         } else {
             spans[0].style.transform = 'none';
             spans[1].style.opacity = '1';
@@ -25,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
     navLinks.forEach(link => {
         link.addEventListener('click', () => {
             navMenu.classList.remove('active');
-            // Reset hamburger
             const spans = hamburger.querySelectorAll('span');
             spans[0].style.transform = 'none';
             spans[1].style.opacity = '1';
@@ -33,22 +32,35 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Scroll Reveal Animation
+    // Improved Scroll Reveal
     const revealElements = document.querySelectorAll('.reveal');
 
     const revealOnScroll = () => {
         const windowHeight = window.innerHeight;
-        const revealPoint = 150;
-
+        
         revealElements.forEach(el => {
             const revealTop = el.getBoundingClientRect().top;
+            const revealPoint = 100;
+            
             if (revealTop < windowHeight - revealPoint) {
                 el.classList.add('active');
             }
         });
     };
 
-    window.addEventListener('scroll', revealOnScroll);
+    // Navbar Scroll Effect
+    const navbar = document.querySelector('.navbar');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            navbar.style.padding = '10px 0';
+            navbar.style.boxShadow = '0 10px 30px -10px rgba(0,0,0,0.1)';
+        } else {
+            navbar.style.padding = '0';
+            navbar.style.boxShadow = 'none';
+        }
+        revealOnScroll();
+    });
+
     // Trigger once on load
     revealOnScroll();
 
@@ -61,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const targetElement = document.querySelector(targetId);
             if (targetElement) {
-                const offset = 80; // Navbar height
+                const offset = 90; // Navbar height
                 const elementPosition = targetElement.getBoundingClientRect().top;
                 const offsetPosition = elementPosition + window.pageYOffset - offset;
 
